@@ -9,11 +9,6 @@ import (
 )
 
 func main() {
-	// GetWalletBalance godoc
-	// @Summary Get Balance
-	// @Description Get User balance
-	// @Produce application/json
-
 	log := logger.SetupLogger(logger.Local, "./logs.log")
 	configPath := flag.String("c", "", "Path to the configuration file")
 	flag.Parse()
