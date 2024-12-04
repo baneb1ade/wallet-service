@@ -3,12 +3,14 @@ package main
 import (
 	"flag"
 	"os"
+	"time"
 	"wallet/internal/app"
 	"wallet/internal/config"
 	"wallet/pkg/logger"
 )
 
 func main() {
+	time.Sleep(10 * time.Second)
 	log := logger.SetupLogger(logger.Local, "./logs.log")
 	configPath := flag.String("c", "", "Path to the configuration file")
 	flag.Parse()

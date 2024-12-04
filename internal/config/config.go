@@ -80,19 +80,19 @@ func MustLoad(cfgPath string) *Config {
 			DBName:     getEnvWithDefault("POSTGRES_DB", "mydatabase"),
 		},
 		Cache: CacheConfig{
-			Addr:     getEnvWithDefault("REDIS_ADDRESS", "127.0.0.1:6379"),
+			Addr:     getEnvWithDefault("REDIS_ADDRESS", "redis:6379"),
 			Username: getEnvWithDefault("REDIS_USER", "redis"),
 			Password: getEnvWithDefault("REDIS_PASSWORD", "redis"),
 			DB:       getEnvWithDefault("REDIS_DB", "0"),
 		},
 		Clients: Clients{
 			Auth: AuthClientConfig{
-				Address: getEnvWithDefault("AUTH_GRPC_ADDR", "localhost:44045"),
+				Address: getEnvWithDefault("AUTH_GRPC_ADDR", "auth:44045"),
 				Timeout: 5 * time.Second,
 				Retries: 5,
 			},
 			Exchange: ExchangeClientConfig{
-				Address: getEnvWithDefault("EXCHANGE_GRPC_ADDR", "localhost:44044"),
+				Address: getEnvWithDefault("EXCHANGE_GRPC_ADDR", "exchanger:44044"),
 				Timeout: 5 * time.Second,
 				Retries: 5,
 			},
