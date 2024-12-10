@@ -12,6 +12,15 @@ type ExchangeRateGetter interface {
 	GetExchangeRateForCurrency(ctx context.Context, fromCurrency, toCurrency string) (float32, error)
 }
 
+// GetWalletBalanceHandler godoc
+// @Summary      Get wallet balance
+// @Description  Retrieve the balance of the user's wallet
+// @Tags         wallet
+// @Accept       json
+// @Produce      json
+// @Param        Authorization  header    string                  true  "Bearer Token"  default(Bearer <token>)
+// @Success      200  {object}  CurrenciesResponse
+// @Router       /api/v1/wallet/balance/ [get]
 func GetWalletBalanceHandler(s Service) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		userID, exists := c.Get("userID")
@@ -42,6 +51,19 @@ func GetWalletBalanceHandler(s Service) func(c *gin.Context) {
 	}
 }
 
+// UpdateWalletBalanceDeposit godoc
+// @Summary      Deposit money into wallet
+// @Description  Add a specified amount to the user's wallet
+// @Tags         wallet
+// @Accept       json
+// @Produce      json
+// @Param        Authorization  header    string                  true  "Bearer Token"  default(Bearer <token>)
+// @Param        request  body      ChangeBalanceRequest  true  "Deposit request"
+// @Success      200      {object}  map[string]interface{}
+// @Failure      400      {object}  map[string]interface{}  "Validation failed"
+// @Failure      401      {object}  map[string]string       "userID not found in context"
+// @Failure      500      {object}  map[string]string       "internal server error"
+// @Router       /api/v1/wallet/deposit/ [post]
 func UpdateWalletBalanceDeposit(s Service, v *validator.Validate) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req ChangeBalanceRequest
@@ -93,6 +115,19 @@ func UpdateWalletBalanceDeposit(s Service, v *validator.Validate) func(c *gin.Co
 	}
 }
 
+// UpdateWalletBalanceWithdraw godoc
+// @Summary      Withdraw money from wallet
+// @Description  Deduct a specified amount from the user's wallet
+// @Tags         wallet
+// @Accept       json
+// @Produce      json
+// @Param        Authorization  header    string                  true  "Bearer Token"  default(Bearer <token>)
+// @Param        request  body      ChangeBalanceRequest  true  "Withdraw request"
+// @Success      200      {object}  map[string]interface{}
+// @Failure      400      {object}  map[string]interface{}  "Validation failed"
+// @Failure      401      {object}  map[string]string       "userID not found in context"
+// @Failure      500      {object}  map[string]string       "internal server error"
+// @Router       /api/v1/wallet/withdraw/ [post]
 func UpdateWalletBalanceWithdraw(s Service, v *validator.Validate) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req ChangeBalanceRequest
@@ -144,6 +179,16 @@ func UpdateWalletBalanceWithdraw(s Service, v *validator.Validate) func(c *gin.C
 	}
 }
 
+// GetExchangeRates godoc
+// @Summary      Get exchange rates
+// @Description  Retrieve the latest exchange rates for supported currencies
+// @Tags         exchange
+// @Accept       json
+// @Produce      json
+// @Param        Authorization  header    string                  true  "Bearer Token"  default(Bearer <token>)
+// @Success      200  {object}  map[string]interface{}
+// @Failure      500  {object}  map[string]string  "internal server error"
+// @Router       /api/v1/exchange/rates/ [get]
 func GetExchangeRates(s Service) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		res, err := s.GetExchangeRates(context.Background())
@@ -154,6 +199,19 @@ func GetExchangeRates(s Service) func(c *gin.Context) {
 	}
 }
 
+// ExchangeRatesForCurrency godoc
+// @Summary      Exchange currency
+// @Description  Exchange a specified amount from one currency to another
+// @Tags         exchange
+// @Accept       json
+// @Produce      json
+// @Param        Authorization  header    string                  true  "Bearer Token"  default(Bearer <token>)
+// @Param        request  body      ExchangeRequest  true  "Exchange request"
+// @Success      200      {object}  map[string]interface{}
+// @Failure      400      {object}  map[string]interface{}  "Validation failed or invalid request"
+// @Failure      401      {object}  map[string]string       "user not found"
+// @Failure      500      {object}  map[string]string       "internal server error"
+// @Router       /api/v1/exchange/ [post]
 func ExchangeRatesForCurrency(s Service, v *validator.Validate) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req ExchangeRequest

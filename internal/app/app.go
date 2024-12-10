@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"log/slog"
+	_ "wallet/docs"
 	authClient "wallet/internal/clients/auth"
 	exchangeClient "wallet/internal/clients/exchange"
 	"wallet/internal/config"
@@ -22,6 +25,8 @@ type App struct {
 	router *gin.Engine
 }
 
+// @title Wallet service API
+// @version 1.0.0
 func NewApp(logger *slog.Logger, cfg *config.Config) (*App, error) {
 	logger.Info("Initializing application")
 	logger.Info("Connect to Postgresql")
@@ -32,6 +37,9 @@ func NewApp(logger *slog.Logger, cfg *config.Config) (*App, error) {
 		Password: cfg.Storage.DBPassword,
 		Database: cfg.Storage.DBName,
 	})
+	if err != nil {
+		return nil, err
+	}
 	logger.Info("Connect to Redis")
 	rdb, err := redis.NewClient(redis.ConfigRedis{
 		Addr:     cfg.Cache.Addr,
@@ -78,6 +86,8 @@ func NewApp(logger *slog.Logger, cfg *config.Config) (*App, error) {
 	exchangeGroup.Use(auth.AuthorizationMiddleware([]byte(cfg.Secret)))
 	exchangeGroup.POST("/", wallet2.ExchangeRatesForCurrency(s, v))
 	exchangeGroup.GET("/rates/", wallet2.GetExchangeRates(s))
+
+	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	var app = &App{
 		config: cfg,
